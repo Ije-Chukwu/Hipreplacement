@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Hip Replacement Surgery – comprehensive guide covering procedure types, recovery, FAQs, and appointment booking."
+    />
+    <title>Hip Replacement – Patient Information Guide</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <!-- Skip Navigation -->
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+
+    <!-- Site Header -->
+    <header class="site-header" role="banner">
+      <div class="container">
+        <div class="header-inner">
+          <a href="index.html" class="logo" aria-label="Hip Replacement – Home">
+            <svg
+              aria-hidden="true"
+              focusable="false"
+              width="32"
+              height="32"
+              viewBox="0 0 32 32"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <circle cx="16" cy="16" r="14" stroke="currentColor" stroke-width="2" fill="none" />
+              <path
+                d="M10 22 Q10 10 16 10 Q22 10 22 22"
+                stroke="currentColor"
+                stroke-width="2"
+                fill="none"
+                stroke-linecap="round"
+              />
+            </svg>
+            <span>Hip Replacement</span>
+          </a>
+
+          <!-- Mobile menu toggle -->
+          <button
+            class="nav-toggle"
+            id="nav-toggle"
+            aria-expanded="false"
+            aria-controls="primary-nav"
+            aria-label="Open navigation menu"
+          >
+            <span class="hamburger" aria-hidden="true"></span>
+          </button>
+
+          <!-- Primary Navigation -->
+          <nav id="primary-nav" class="primary-nav" aria-label="Primary navigation">
+            <ul role="list">
+              <li><a href="#about">About</a></li>
+              <li><a href="#procedure-types">Procedure Types</a></li>
+              <li><a href="#recovery">Recovery</a></li>
+              <li><a href="#faq">FAQ</a></li>
+              <li><a href="#contact">Contact</a></li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main id="main-content" tabindex="-1">
+      <!-- Hero Section -->
+      <section
+        class="hero"
+        aria-labelledby="hero-heading"
+      >
+        <div class="container">
+          <div class="hero-content">
+            <h1 id="hero-heading">Understanding Hip Replacement Surgery</h1>
+            <p class="hero-subtitle">
+              Clear, reliable information to help you and your loved ones make
+              confident decisions about hip replacement treatment.
+            </p>
+            <div class="hero-actions">
+              <a href="#about" class="btn btn-primary">Learn more</a>
+              <a href="#contact" class="btn btn-secondary">Book a consultation</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- About Section -->
+      <section id="about" class="section" aria-labelledby="about-heading">
+        <div class="container">
+          <h2 id="about-heading">What Is Hip Replacement?</h2>
+          <div class="content-grid">
+            <div class="content-text">
+              <p>
+                Hip replacement (arthroplasty) is a surgical procedure in which
+                a damaged or arthritic hip joint is removed and replaced with an
+                artificial implant. The surgery relieves pain, restores mobility,
+                and improves quality of life for hundreds of thousands of patients
+                every year.
+              </p>
+              <p>
+                Most people who need hip replacement have severe arthritis that
+                limits everyday activities such as walking, bending, or climbing
+                stairs, even after other treatments have been tried.
+              </p>
+            </div>
+            <div class="stats-list" role="list" aria-label="Key statistics">
+              <div class="stat-card" role="listitem">
+                <span class="stat-number" aria-label="More than 450,000">450K+</span>
+                <span class="stat-label">procedures per year in the US</span>
+              </div>
+              <div class="stat-card" role="listitem">
+                <span class="stat-number" aria-label="Greater than 95 percent">95%+</span>
+                <span class="stat-label">patient satisfaction rate</span>
+              </div>
+              <div class="stat-card" role="listitem">
+                <span class="stat-number" aria-label="Up to 20 years">20 yrs</span>
+                <span class="stat-label">average implant longevity</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Procedure Types Section -->
+      <section
+        id="procedure-types"
+        class="section section-alt"
+        aria-labelledby="procedures-heading"
+      >
+        <div class="container">
+          <h2 id="procedures-heading">Types of Hip Replacement</h2>
+          <p class="section-intro">
+            There are several surgical approaches. Your surgeon will recommend the
+            best option based on your anatomy, activity level, and overall health.
+          </p>
+
+          <!-- Tab interface -->
+          <div class="tabs" role="tablist" aria-label="Hip replacement procedure types">
+            <button
+              class="tab-button tab-active"
+              role="tab"
+              id="tab-total"
+              aria-selected="true"
+              aria-controls="panel-total"
+            >
+              Total Hip Replacement
+            </button>
+            <button
+              class="tab-button"
+              role="tab"
+              id="tab-partial"
+              aria-selected="false"
+              aria-controls="panel-partial"
+              tabindex="-1"
+            >
+              Partial Hip Replacement
+            </button>
+            <button
+              class="tab-button"
+              role="tab"
+              id="tab-resurfacing"
+              aria-selected="false"
+              aria-controls="panel-resurfacing"
+              tabindex="-1"
+            >
+              Hip Resurfacing
+            </button>
+          </div>
+
+          <div
+            id="panel-total"
+            role="tabpanel"
+            aria-labelledby="tab-total"
+            class="tab-panel"
+          >
+            <h3>Total Hip Replacement</h3>
+            <p>
+              The most common procedure. Both the femoral head (ball) and the
+              acetabulum (socket) are replaced with prosthetic components. It is
+              highly effective for osteoarthritis, rheumatoid arthritis, and
+              post-traumatic arthritis.
+            </p>
+            <ul>
+              <li>Typical surgery time: 1 – 2 hours</li>
+              <li>Hospital stay: 1 – 3 days</li>
+              <li>Walking with assistance: within 24 hours</li>
+              <li>Full recovery: 6 – 12 weeks</li>
+            </ul>
+          </div>
+
+          <div
+            id="panel-partial"
+            role="tabpanel"
+            aria-labelledby="tab-partial"
+            class="tab-panel"
+            hidden
+          >
+            <h3>Partial Hip Replacement (Hemiarthroplasty)</h3>
+            <p>
+              Only the femoral head is replaced, leaving the natural socket intact.
+              Most often performed after a hip fracture in older adults where the
+              socket cartilage is still healthy.
+            </p>
+            <ul>
+              <li>Shorter operating time than total replacement</li>
+              <li>Suitable when socket is undamaged</li>
+              <li>Lower risk of dislocation in some cases</li>
+              <li>Commonly performed in patients over 70</li>
+            </ul>
+          </div>
+
+          <div
+            id="panel-resurfacing"
+            role="tabpanel"
+            aria-labelledby="tab-resurfacing"
+            class="tab-panel"
+            hidden
+          >
+            <h3>Hip Resurfacing</h3>
+            <p>
+              The femoral head is reshaped and capped with a smooth metal covering
+              rather than being removed entirely. Often chosen for younger, active
+              patients because more bone is preserved, potentially making future
+              revision surgery easier.
+            </p>
+            <ul>
+              <li>Best for younger, active patients</li>
+              <li>More bone preserved than total replacement</li>
+              <li>Lower dislocation risk</li>
+              <li>Metal-on-metal bearing surface</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- Recovery Section -->
+      <section id="recovery" class="section" aria-labelledby="recovery-heading">
+        <div class="container">
+          <h2 id="recovery-heading">Recovery Timeline</h2>
+          <p class="section-intro">
+            Recovery varies by individual, but the following milestones give a
+            general guide of what to expect after total hip replacement.
+          </p>
+
+          <ol class="timeline" aria-label="Recovery milestone timeline">
+            <li class="timeline-item">
+              <div class="timeline-marker" aria-hidden="true">1</div>
+              <div class="timeline-content">
+                <h3>Day 1 – 3: Hospital</h3>
+                <p>
+                  You will begin standing and walking with a walker or crutches
+                  within hours of surgery. Pain management and physiotherapy
+                  start immediately.
+                </p>
+              </div>
+            </li>
+            <li class="timeline-item">
+              <div class="timeline-marker" aria-hidden="true">2</div>
+              <div class="timeline-content">
+                <h3>Week 1 – 3: Early Recovery at Home</h3>
+                <p>
+                  Continue physiotherapy exercises daily. You may be able to
+                  perform light activities. Keep the wound clean and dry. Avoid
+                  high-impact movements.
+                </p>
+              </div>
+            </li>
+            <li class="timeline-item">
+              <div class="timeline-marker" aria-hidden="true">3</div>
+              <div class="timeline-content">
+                <h3>Week 4 – 6: Increased Mobility</h3>
+                <p>
+                  Most people transition from a walker to a cane. Stairs become
+                  manageable. Driving may be possible depending on which hip was
+                  operated on and your surgeon's advice.
+                </p>
+              </div>
+            </li>
+            <li class="timeline-item">
+              <div class="timeline-marker" aria-hidden="true">4</div>
+              <div class="timeline-content">
+                <h3>Week 6 – 12: Return to Normal Life</h3>
+                <p>
+                  Most daily activities resume. Low-impact exercise (swimming,
+                  cycling) is encouraged. Follow-up X-rays confirm implant
+                  position.
+                </p>
+              </div>
+            </li>
+            <li class="timeline-item">
+              <div class="timeline-marker" aria-hidden="true">5</div>
+              <div class="timeline-content">
+                <h3>3 – 12 Months: Full Recovery</h3>
+                <p>
+                  Strength and endurance continue to improve. Many patients
+                  return to recreational sports. Annual check-ups monitor
+                  implant longevity.
+                </p>
+              </div>
+            </li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- FAQ Section -->
+      <section
+        id="faq"
+        class="section section-alt"
+        aria-labelledby="faq-heading"
+      >
+        <div class="container">
+          <h2 id="faq-heading">Frequently Asked Questions</h2>
+
+          <div class="accordion" id="faq-accordion">
+            <!-- Item 1 -->
+            <div class="accordion-item">
+              <h3>
+                <button
+                  class="accordion-trigger"
+                  aria-expanded="false"
+                  aria-controls="faq-1-panel"
+                  id="faq-1-trigger"
+                >
+                  Am I a good candidate for hip replacement?
+                  <svg
+                    class="accordion-icon"
+                    aria-hidden="true"
+                    focusable="false"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 20 20"
+                  >
+                    <polyline points="4,7 10,13 16,7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+              </h3>
+              <div
+                id="faq-1-panel"
+                role="region"
+                aria-labelledby="faq-1-trigger"
+                class="accordion-panel"
+                hidden
+              >
+                <p>
+                  Good candidates typically have severe hip pain limiting daily
+                  activities, significant joint damage confirmed by X-ray, and
+                  have not found adequate relief from non-surgical treatments
+                  (medication, physiotherapy, or injections). Age, weight, and
+                  general health are also considered. Consult your orthopaedic
+                  surgeon for a personalised assessment.
+                </p>
+              </div>
+            </div>
+
+            <!-- Item 2 -->
+            <div class="accordion-item">
+              <h3>
+                <button
+                  class="accordion-trigger"
+                  aria-expanded="false"
+                  aria-controls="faq-2-panel"
+                  id="faq-2-trigger"
+                >
+                  How long does the implant last?
+                  <svg
+                    class="accordion-icon"
+                    aria-hidden="true"
+                    focusable="false"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 20 20"
+                  >
+                    <polyline points="4,7 10,13 16,7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+              </h3>
+              <div
+                id="faq-2-panel"
+                role="region"
+                aria-labelledby="faq-2-trigger"
+                class="accordion-panel"
+                hidden
+              >
+                <p>
+                  Modern implants typically last 15 – 20 years or more. Longevity
+                  depends on activity level, body weight, implant materials, and
+                  surgical technique. Younger, more active patients may require a
+                  revision surgery later in life.
+                </p>
+              </div>
+            </div>
+
+            <!-- Item 3 -->
+            <div class="accordion-item">
+              <h3>
+                <button
+                  class="accordion-trigger"
+                  aria-expanded="false"
+                  aria-controls="faq-3-panel"
+                  id="faq-3-trigger"
+                >
+                  Will I set off metal detectors at airports?
+                  <svg
+                    class="accordion-icon"
+                    aria-hidden="true"
+                    focusable="false"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 20 20"
+                  >
+                    <polyline points="4,7 10,13 16,7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+              </h3>
+              <div
+                id="faq-3-panel"
+                role="region"
+                aria-labelledby="faq-3-trigger"
+                class="accordion-panel"
+                hidden
+              >
+                <p>
+                  Possibly. Metal implants can trigger airport security scanners.
+                  Carry a medical implant card or letter from your surgeon when
+                  travelling. Most airports now use body-scan technology that
+                  identifies implants without requiring additional screening.
+                </p>
+              </div>
+            </div>
+
+            <!-- Item 4 -->
+            <div class="accordion-item">
+              <h3>
+                <button
+                  class="accordion-trigger"
+                  aria-expanded="false"
+                  aria-controls="faq-4-panel"
+                  id="faq-4-trigger"
+                >
+                  What activities should I avoid after surgery?
+                  <svg
+                    class="accordion-icon"
+                    aria-hidden="true"
+                    focusable="false"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 20 20"
+                  >
+                    <polyline points="4,7 10,13 16,7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+              </h3>
+              <div
+                id="faq-4-panel"
+                role="region"
+                aria-labelledby="faq-4-trigger"
+                class="accordion-panel"
+                hidden
+              >
+                <p>
+                  High-impact activities such as running, jumping, and contact
+                  sports are generally discouraged to extend implant life. Low-impact
+                  activities like walking, swimming, cycling, and golf are usually
+                  well tolerated. Your surgeon will provide personalised guidance.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Contact / Appointment Booking -->
+      <section id="contact" class="section" aria-labelledby="contact-heading">
+        <div class="container">
+          <h2 id="contact-heading">Book a Consultation</h2>
+          <p class="section-intro">
+            Fill in the form below and a member of our team will contact you
+            within one working day to schedule your appointment.
+          </p>
+
+          <!-- Live region for form submission feedback -->
+          <div
+            id="form-status"
+            role="status"
+            aria-live="polite"
+            aria-atomic="true"
+            class="form-status"
+          ></div>
+
+          <form
+            id="contact-form"
+            class="contact-form"
+            novalidate
+            aria-label="Consultation booking form"
+          >
+            <!-- Full Name -->
+            <div class="form-group">
+              <label class="form-label" for="full-name">
+                Full name
+                <span class="required" aria-hidden="true">*</span>
+              </label>
+              <input
+                class="form-input"
+                type="text"
+                id="full-name"
+                name="full-name"
+                autocomplete="name"
+                required
+                aria-required="true"
+                aria-describedby="full-name-error"
+              />
+              <span
+                id="full-name-error"
+                class="field-error"
+                role="alert"
+                aria-live="assertive"
+              ></span>
+            </div>
+
+            <!-- Email -->
+            <div class="form-group">
+              <label class="form-label" for="email">
+                Email address
+                <span class="required" aria-hidden="true">*</span>
+              </label>
+              <input
+                class="form-input"
+                type="email"
+                id="email"
+                name="email"
+                autocomplete="email"
+                required
+                aria-required="true"
+                aria-describedby="email-hint email-error"
+              />
+              <span id="email-hint" class="field-hint">
+                We will only use your email to contact you about your appointment.
+              </span>
+              <span
+                id="email-error"
+                class="field-error"
+                role="alert"
+                aria-live="assertive"
+              ></span>
+            </div>
+
+            <!-- Phone -->
+            <div class="form-group">
+              <label class="form-label" for="phone">
+                Phone number
+              </label>
+              <input
+                class="form-input"
+                type="tel"
+                id="phone"
+                name="phone"
+                autocomplete="tel"
+                aria-describedby="phone-hint"
+              />
+              <span id="phone-hint" class="field-hint">
+                Optional – include country code if outside the UK (e.g. +1 555 000 0000).
+              </span>
+            </div>
+
+            <!-- Preferred Contact Method -->
+            <fieldset class="form-group">
+              <legend class="form-label">
+                Preferred contact method
+                <span class="required" aria-hidden="true">*</span>
+              </legend>
+              <div class="radio-group">
+                <label class="radio-label">
+                  <input
+                    class="radio-input"
+                    type="radio"
+                    name="contact-method"
+                    value="email"
+                    checked
+                    aria-required="true"
+                  />
+                  Email
+                </label>
+                <label class="radio-label">
+                  <input
+                    class="radio-input"
+                    type="radio"
+                    name="contact-method"
+                    value="phone"
+                  />
+                  Phone
+                </label>
+              </div>
+            </fieldset>
+
+            <!-- Message -->
+            <div class="form-group">
+              <label class="form-label" for="message">
+                Your message or questions
+              </label>
+              <textarea
+                class="form-input form-textarea"
+                id="message"
+                name="message"
+                rows="5"
+                aria-describedby="message-hint"
+              ></textarea>
+              <span id="message-hint" class="field-hint">
+                Optional – describe your symptoms or any questions you have.
+              </span>
+            </div>
+
+            <!-- Privacy consent -->
+            <div class="form-group form-group-inline">
+              <input
+                class="checkbox-input"
+                type="checkbox"
+                id="privacy"
+                name="privacy"
+                required
+                aria-required="true"
+                aria-describedby="privacy-error"
+              />
+              <label class="form-label form-label-inline" for="privacy">
+                I agree to the
+                <a href="#privacy-policy">privacy policy</a>
+                <span class="required" aria-hidden="true">*</span>
+              </label>
+              <span
+                id="privacy-error"
+                class="field-error"
+                role="alert"
+                aria-live="assertive"
+              ></span>
+            </div>
+
+            <p class="required-note">
+              <span aria-hidden="true">*</span> Required fields
+            </p>
+
+            <button type="submit" class="btn btn-primary btn-submit">
+              Submit enquiry
+            </button>
+          </form>
+        </div>
+      </section>
+    </main>
+
+    <!-- Site Footer -->
+    <footer class="site-footer" role="contentinfo">
+      <div class="container">
+        <div class="footer-inner">
+          <p class="footer-copy">
+            &copy; <span id="footer-year"></span> Hip Replacement Information Guide.
+            This site provides general health information and is not a substitute
+            for professional medical advice.
+          </p>
+          <nav aria-label="Footer navigation">
+            <ul class="footer-nav" role="list">
+              <li><a href="#about">About</a></li>
+              <li><a href="#contact">Contact</a></li>
+              <li><a href="#privacy-policy" id="privacy-policy">Privacy policy</a></li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>
