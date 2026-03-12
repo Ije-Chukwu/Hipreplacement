@@ -1,0 +1,151 @@
+---
+title: "PU5558-PU5567-computer-lab-report/Hip-Replacement"
+author: "Anonymous"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+Packages installed for this project are tinytex, yaml,tidyverse, tidymodels,corrplot, vip from CRAN
+
+
+## Load necessary packages
+
+```{r}
+library(dplyr)            #for data cleaning
+library(tidyverse)        #for general datascience
+library(tidymodels)       #for machine learning
+library(corrplot)         #for visualizing correlation matrix
+library(vip)              #for variable importance plots
+
+```
+
+To ensure reproducibility of this project, renv was used to ensure that exact versions of packages used for this project are recorded and as well maintain consistency of software environment used accross different sessions or machines while set.seed was used to ensure reproducibility of results that depend on random process such as data-splitting and resampling
+
+```{r set seed}
+set.seed(123)    #set seed for reproducibility of random based results
+```
+
+## Load chosen dataset
+The hip replacement dataset is loaded from a csv file saved as Hip Replacement CCG 2021.CSV 
+
+```{r read hip replacement data}
+hipr_data<- read_csv("Hip Replacement CCG 2021.CSV")
+
+```
+
+## Dataset description
+This is a anonymizede dataset from PROM.......
+
+
+Here, we examine our data for a general overview including the dimension, first few rows, data structure and the summary statistics of the dataset
+```{r Data overview and description}
+
+
+dim(hipr_data)          #to view the dimension of the dataset
+head(hipr_data)              #to view the first few rows of the dataset
+glimpse (hipr_data)     #to view the structure of the dataset
+summary(hipr_data)      #to view the summary statistics of the data
+names(hipr_data)        #To view column names at one glance
+
+```
+
+
+5575 rows (cases), 81 cols (variables)
+
+The provider code, proceedure, revision flag and year, are not directly relevant for this project, hence they can be dropped.
+
+
+
+```{r consider deleting this chunk}
+str(hipr_data) %>% count()
+```
+
+
+## Data Cleaning
+
+```{r convert * values to NA}
+hipr_data<- hipr_data %>% 
+  mutate(
+    'Age Band' = if_else(`Age Band`== "*", NA_character_,`Age Band`),
+    Gender = if_else(Gender=="*",NA_character_, Gender)
+  )
+```
+
+
+
+```{r identify and extract indicator variables}
+
+# extracting only the numeric columns (the indicators are stored as numeric values 1 and 9)
+num_cols <- hipr_data %>% select(where(is.numeric))
+
+# Then, select indicator columns (ind_cols) with exactly 2 unique values (uniq_vals) and whose unique values are 1 and 9.
+ind_cols <- num_cols %>% 
+  select_if(~ {
+    uniq_vals <- sort(unique(na.omit(.)))
+    length(uniq_vals) == 2 && all(uniq_vals %in% c(1, 9))
+  })
+
+# Print the names of the identified indicator columns
+names(ind_cols)
+
+
+```
+The indicator variables are: Heart Disease,High Bp,Stroke,Circulation,Lung Disease,Diabetes,Kidney Disease,Nervous System,Liver Disease,Cancer,Depression,Arthritis. Next step is to recode the variables as factors with labels 1=yes and 9=No
+
+```{r create categorical columns with labels for the indicator variables (ind_cols)}
+
+hipr_data <- hipr_data %>%
+  mutate(across(all_of(ind_cols),
+                ~ recode_factor(as.character(.), 
+                                  `1` = "Yes",
+                                  `9` = "No"),
+                .names = "fac_{.cols}"))
+# This creates new columns (for example, fct_arthritis) with the factor labels "Yes" and "No".
+
+# You can choose one of these options or update the original columns with these values.
+```
+
+
+## Suitable machine learning algorithm for three questions:
+
+1. Before the operation, can we estimate the post-operative EQ5D index for a patient?
+
+
+2. Before the operation, can we predict how much pain a patient will have after the operation?
+
+
+3. Before the operation, can we calculate how many patients have had previous surgery? 
+
+
+
+
+## Model building to answer chosen question
+
+1.	Data splitting
+
+```{r}
+
+```
+
+2.	Selection and preprocessing of predictors
+
+```{r}
+
+```
+
+3.	Model specification and training
+
+```{r}
+
+```
+
+4.	Model evaluation
+
+```{r}
+
+```
+
+## Limitations of machine learning model
+

@@ -1,0 +1,983 @@
+---
+title: "Machine Learning algorithm Estimating EQ5D Index one year after Total Knee
+  Replacement surgery Using Pre-surgical Variables"
+author: "Ijeoma Nwachukwu"
+date: "2025-04-24"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+renv::snapshot()
+
+```
+
+##Introduction
+Machine Learning Algorithms have proven beneficial to healthare and guides major clinical decision making processes.  This project aims to estimate the post-operative EQ5D index after a patient has undergone a total knee replacement, with an appropriate Machine Learning algorithm using selected pre-surgical variables.
+
+
+This is important to (...Why is this important?...)
+
+What has been done in the past and what can my work contribute?
+
+
+Study Design:
+This project is based on a retrospective cross-sectional observational study using secondary data from NHS Digital, containing Provisional Patient Reported Outcome Measures  in England before and after a Hip or Knee Replacement Procedure, from April 2020 to March 2021, as well as othe pre-surgical characteristics.The dataset was assessed through the University of Aberdeen's school of Applied Health Sciences.
+
+The dataset contains anonymized records of 5422 patients from Health care providers in England and with 81 predictor variables out of which  ....... were included in the model based on ............. All cases with missing values were removed from the model to <........purpose and justification.........>. The primary outcome measure is the post-operative EQ5D index.
+
+Method:
+The Random Forest Regression Model was used for this project. Preliminary data cleaning and preparations was carried out on the data before it was split using stratified sampling to ensure that the distribution of the output variable is similar between the test set and the trainig set. A random seed(123) set to ensure reproducibility of the random split process. A simple recipe was used to process the training set...and then......
+
+
+All steps and processes are documented below with comments explaing what each line of code does to aid reproducibility of this work. Also, a lockfile with the current state of dependencies in the project library was setup and snapshots of packages and library update taken so that exact packages and versions used can be restored using `renv::restore()` as required.
+
+
+## Load necessary packages  
+
+```{r load-packages, include=FALSE}  
+
+library(tidyverse)    # for general data science  
+library(tidymodels)   # for machine learning  
+library(vip)          # for variable importance plots  
+library(randomForest) # for the random forest model engine  
+library(janitor)      # for data cleaning  
+library(tibble)  
+
+  
+
+```  
+
+  
+
+## Load Data  
+
+The below code block loads the data already saved in the project directory folder and glimpse into it. 
+
+```{r Load-Data, echo=TRUE, warning=FALSE}  
+
+krep_data <- read_csv("Knee Replacement CCG 2021.csv")  
+
+glimpse(krep_data)  
+
+```  
+
+  
+## Dataset description  
+The loaded data has 5422 observations and 81 variables, 5 of which are charater type and the rest are numerical (mixture of score labels and continuous values).
+ 
+**Missing Values:**The dataset contains a good number of missing values. For “Age Band” and “Gender”, missing values are denoted by * and missingness across these variables is not at random. Twelve indicators that are responses to the question “Have you been told by a doctor that you have X?” where X is arthritis, cancer, diabetes, etc. only have two values: 1 = Yes and 9 = Missing. For these indicators only, 9 will be treated as “No” instead of “Missing”.
+ 
+ 
+**Distribution:**A histogram plot of the outcome variable, `Post-Op Q EQ5D Index`  using `ggplot2` shows a pronounced right skewed distribution with warning on rows containing 194 non-finite values which were dropped from the plot. A quick check revealed that the outcome variable rows contain `NA` which will be inputed before modelling.
+
+  Because tree-based ensemble methods do not rely on normality and handle non-linear relations well, we fit a Random Forest Regression model with default settings for parameter tuning to capture the potential non-linear relationships that exist between the pre-operative variables and the outcome variable.
+ 
+
+**Presence of predicted values:** The variables includes predicted outcomes based on a number of baseline covariates (also included in the dataset) which were fitted using the "casemix-adjustment model" as specified in the PROMs data dictionary. These variables target the primary outcome for this project and will inflate the signals of the baseline features they were computed with, leading to a double count of those features. Hence Random Forest will most likely split on those columns and they will blurr out genuine patient-level signals. We will therefore exclude them from the model to enable our model learn from raw patient data. 
+  
+
+```{r fig.cap= "Histogram of Post-Op Q EQ5D Index", echo=TRUE, warning=TRUE}
+
+krep_data %>% 
+ggplot(aes(x = `Post-Op Q EQ5D Index` )) +   
+  geom_histogram(bins = 30, col= "white")  
+
+
+```  
+
+ 
+##Data Preparation
+  Here, we do some housekeeping to prepare and clean the data which includes:
+- Manually deselecing variables which at quick glance and from domain knowledge are not important to our model. This includes all post- surgical variables, casemix-adjusted predicted values and scores.This reduces the dimensionality of the dataset which helps for faster fits, less overfitting and clearer interpretation while still using simple R data preprocessing tools.
+- Handling missing values of different sorts
+- Renaming of variable names to comply with tidyverse' variable names standard for code readability and consistency.
+These tasks are further broken down into manageable steps and explained with comments in the code chunk below.
+
+Dimensionality reduction:
+```{r Data-preparation}  
+
+#1. drop all casemix-adjusted predicted values  
+
+krep_data <- krep_data %>%
+  select( 
+    -ends_with("Predicted")
+    )  
+
+#further preparations to be saved to the object kr_data  
+
+kr_data <- krep_data %>%  
+ select(  
+#2. droping variables that do not infom our model or does not fit the objectives of this project
+
+    -Procedure,                 #does not vary
+    -Year,                      #does not vary   
+    -`Pre-Op Q Assisted`,       #whether the patient was helped to fill thequestionaire
+    -`Pre-Op Q Assisted By`,    #who (relationship) helped the patient fill the questionaire 
+    -`Knee Replacement Pre-Op Q Score`,  
+
+    #2 drops ALL columns beginning with “Post” which are the Post surgical variables. The outcome variable will be affected, however , we will bind it back to kr_data  
+
+    -starts_with("Post"),
+    -starts_with("Knee Replacement Post"),  
+
+    #3 drops profile variables;a 5‑digit code encoding each of the five EQ‑5D dimension responses these variables add no new information and are already summarized by the numeric index    
+
+    -`Pre-Op Q EQ5D Index Profile`,
+    -`Post-Op Q EQ5D Index Profile`,
+    -`Knee Replacement Pre-Op Q Score`,
+    -`Pre-Op Q EQ VAS`, #note: Post-Op Q EQ VAS has already been handled in step #2  
+
+    #4 specify variables to include
+    `Provider Code`,
+    `Revision Flag`,
+    `Age Band`,
+    Gender,
+    `Heart Disease`,
+    `High Bp`,
+    Stroke,
+    Circulation,
+    `Lung Disease`,
+    Diabetes,
+    `Kidney Disease`,
+    `Nervous System`,
+    `Liver Disease`,
+    Cancer, 
+    Depression,
+    Arthritis,
+    `Pre-Op Q Symptom Period`,
+    `Pre-Op Q Living Arrangements`,
+    `Pre-Op Q Previous Surgery`
+  )
+  
+
+```  
+
+Binding back outcome variable Post-Op Q EQ5D Index to kr_data in a seperate chunk and assigning to a new dataframe named `kr`:
+```{r bind-outcome}  
+
+kr <- kr_data %>%  
+  bind_cols( 
+    select(krep_data, `Post-Op Q EQ5D Index`)  
+ )  
+
+```  
+
+
+Dealing with missing values and potential duplicate rows:
+```{r handling-missing(*)-values, echo=TRUE}  
+
+#Convert "*" in age band and gender to missing value (NA) and remove rows with missing values as well as unique rows  
+
+
+kr <- kr  %>% 
+  mutate(across(
+    c(`Age Band`, Gender),                 # just these two columns  
+    ~ na_if(., "*")                        # convert "*" to NA  
+  ))%>%  
+
+  unique()        # keep unique rows to remove any accidental duplicate rows   
+
+```
+
+
+Name cleaning using `janitor` and `snake_case`:
+```{r clean-names, echo=TRUE} 
+# Replace spaces in column names with underscores using janitor   
+
+kr<- kr %>%  
+  clean_names()  
+#remove knee_replacement from the columns having the prefix  
+kr_data <- kr_data %>%  
+  rename_with(  
+    ~ sub("^knee_replacement_", "", .x),   # remove that exact prefix 
+    starts_with("knee_replacement_")       # only apply to columns with that prefix  
+  )  
+
+
+
+glimpse(kr)  
+
+```  
+
+  
+
+```{r kr-cleaning} 
+
+kr_cleaned<- kr %>% mutate(c( 
+  heart_disease,
+  high_bp,
+  stroke,
+  circulation)
+      ~ if_else(.x == 9L, 0L, .x) 
+)
+   
+
+``` 
+
+
+## Suitable machine learning algorithm for three questions:  
+
+1. Before the operation, can we estimate the post-operative EQ5D index for a patient?
+
+Yes. The Post-operative EQ5D index can be estimated for a patient before a knee replacement surgery. The outcome, Post-Operative EQ5D index is a continuous measure for health related quality of life of and ranges from -0.594 to 1.The Random forest regression model is a more suitable model to estimate this outcome measure because it does not rely on the distribution of the outcome measure which in this case is highly skewed. It is also quite robust with handling non-linearity and categorical predictors unlike the linear regression model which require all predictors to be numeric.
+
+2. Before the operation, can we predict how much pain a patient will have after the operation?
+
+Yes, the measure of pain a patient will have after the the knee replacement operation can be predicted beforehand using ordinal logistic regression because the outcome variable in this case is an ordered category of pain (eg None, Mild, Moderate, Severe, etc).The ordinal logistic regression respects ranking and gives interpretable odds ratios. 
+
+
+3. Before the operation, can we calculate how many patients have had previous surgery? 
+Yes, the number of patients who have had previous surgery can be calculated before surgery. This is not predictive and is not a machine learning procedure, hence a simple descriptive count can be used and can be directly computed on the previous surgery variable. However, there is need to recode the variables as factor with levels 1=Yes, 2=No, and 9= Missing.
+  
+
+## Model building to answer chosen question  
+
+  
+
+1. Data splitting  
+
+```{r Data-Splitting}  
+
+set.seed(123)  
+
+  
+
+   
+
+  
+
+   
+
+  
+
+# Create the split  
+
+  
+
+kr_split <- kr%>%  
+
+  
+
+    initial_split(prop = 0.8,        # proportion in training set  
+
+  
+
+                  strata =post_op_q_eq5d_index)  # ensure distribution of post_op_q_eq5d_index in the two datasets is similar  
+
+  
+
+   
+
+  
+
+# Save the two datasets as objects  
+
+  
+
+kr_train <- training(kr_split)  
+
+  
+
+kr_test <- testing(kr_split)  
+
+  
+
+```  
+
+  
+
+   
+
+  
+
+2. Selection and preprocessing of predictors  
+
+  
+
+```{r specify-recipe-and-select-predictors}  
+
+  
+
+  
+
+# 1a) Define your selected predictors  
+
+  
+
+selected_vars <- c(  
+
+  
+
+  "provider_code",  
+
+  
+
+  "revision_flag",  
+
+  
+
+  "age_band", "gender",  
+
+  
+
+  "pre_op_q_symptom_period",  
+
+  
+
+  "pre_op_q_living_arrangements",  
+
+  
+
+  "pre_op_q_disability",  
+
+  
+
+  "heart_disease",  
+
+  
+
+  "high_bp",  
+
+  
+
+  "stroke",  
+
+  
+
+  "circulation",  
+
+  
+
+  "lung_disease",  
+
+  
+
+  "diabetes",  
+
+  
+
+  "kidney_disease",  
+
+  
+
+  "nervous_system",  
+
+  
+
+  "liver_disease",  
+
+  
+
+  "cancer",  
+
+  
+
+  "depression",  
+
+  
+
+  "arthritis",  
+
+  
+
+  "pre_op_q_eq5d_index",  
+
+  
+
+  "post_op_q_eq5d_index",  
+
+  
+
+  paste0("knee_replacement_pre_op_q_",   
+
+  
+
+         c("pain", "night_pain", "washing", "transport", "walking","standing", "limping", "kneeling", "work","confidence", "shopping", "stairs"))  
+)  
+
+  
+
+   
+
+  
+
+indicators <- c(  
+
+  
+
+  "heart_disease",  
+
+  
+
+  "high_bp",  
+
+  
+
+  "stroke",  
+
+  
+
+  "circulation",  
+
+  
+
+  "lung_disease",  
+
+  
+
+  "diabetes",  
+
+  
+
+  "kidney_disease",  
+
+  
+
+  "nervous_system",  
+
+  
+
+  "liver_disease",  
+
+  
+
+  "cancer",  
+
+  
+
+  "depression",  
+
+  
+
+  "arthritis"  
+
+  
+
+)  
+
+  
+
+   
+
+  
+
+   
+
+  
+
+   
+
+  
+
+# 1b) Build recipe using all columns, then drop the extras  
+
+  
+
+kr_rec <- kr_train %>% recipe(post_op_q_eq5d_index~  
+
+  heart_disease+ 
+
+  high_bp+ 
+
+  stroke+ 
+
+  circulation+ 
+
+  pre_op_q_eq5d_index+ 
+
+  age_band+ 
+
+  gender+ 
+
+  pre_op_q_disability 
+
+) 
+
+  
+
+##kr_train should not contain outcome var 
+
+  
+
+  
+
+    
+
+  
+
+# 1) Recode numeric 9 → 0  
+
+  
+
+  step_mutate( heart_disease, 
+
+  high_bp, 
+
+  stroke, 
+
+  circulation,  
+
+  
+
+      ~ if_else(.x == 9L, 0L, .x)    # numeric recode  
+
+  
+
+    )  
+
+  
+
+  )%>%  
+
+  
+
+   
+
+  
+
+  # 2) Convert those now-binary columns to factors  
+
+  
+
+  step_mutate(  
+
+  
+
+    across(  
+
+  
+
+      all_of(indicators),  
+
+  
+
+      as.factor  
+
+  
+
+    )  
+
+  
+
+  ) %>%  
+
+  
+
+    
+
+  
+
+  # 2) Other factors: turn any "9" level to NA  
+
+  
+
+  step_mutate(  
+
+  
+
+    across(  
+
+  
+
+      all_nominal_predictors() %>% setdiff(indicators),  
+
+  
+
+      ~ na_if(.x, "9")  
+
+    )  
+
+  
+
+  ) %>%  
+
+  
+
+  
+
+    
+
+  
+
+# 4) Impute your one continuous predictor (and any other numerics) by median  
+
+  
+
+  step_impute_median(all_numeric_predictors()) %>%  
+
+  step_zv(selected_vars) 
+
+  step_corr(selected_vars) 
+
+  
+
+   
+
+  
+
+   
+
+  
+
+```  
+
+  
+
+   
+
+  
+
+3. Model specification and training  
+
+  
+
+   
+
+  
+
+```{r specify-model}  
+
+  
+
+   
+
+  
+
+# Random forest model specification  
+
+  
+
+kr_spec <- rand_forest() %>%  
+
+  
+
+    set_mode("regression") %>%  
+
+  
+
+    set_engine("randomForest")  
+
+  
+
+   
+
+  
+
+```  
+
+  
+
+   
+
+  
+
+## Workflow  
+
+  
+
+   
+
+  
+
+Let's put recipe and model together in a workflow:  
+
+  
+
+   
+
+  
+
+```{r specify-workflow}  
+
+  
+
+   
+
+  
+
+kr_wflow <-workflow() %>%  
+
+  
+
+           add_recipe(kr_rec) %>%  
+
+  
+
+           add_model(kr_spec)  
+
+  
+
+   
+
+  
+
+```  
+
+  
+
+   
+
+  
+
+evaluating steps are model-independent:  
+
+  
+
+   
+
+  
+
+## Model training  
+
+  
+
+   
+
+  
+
+We use fit() on our training data, which prepares the predictors according to our recipe, and trains the model using the resulting predictors:  
+
+  
+
+   
+
+  
+
+```{r train-model}  
+
+  
+
+   
+
+  
+
+fit_kr_wflow <- kr_wflow %>%  
+
+  
+
+    fit(data = kr_train)  
+
+  
+
+   
+
+  
+
+```  
+
+  
+
+   
+
+  
+
+   
+
+  
+
+Let's have a look at which variables are most important using vip():  
+
+  
+
+   
+
+  
+
+```{r variable-importance}  
+
+  
+
+   
+
+  
+
+fit_kr_wflow %>%   
+
+  
+
+  extract_fit_parsnip() %>%   
+
+  
+
+  vip(num_features = 5)  
+
+  
+
+   
+
+  
+
+```  
+
+  
+
+   
+
+  
+
+   
+
+  
+
+   
+
+  
+
+## Model evaluation  
+
+  
+
+   
+
+  
+
+We'll use the same evaluation metrics (root mean squared error, R squared and mean absolute error). As before, let's evaluate on the training set first, and then on the testing set:   
+
+  
+
+   
+
+  
+
+   
+
+  
+
+```{r eval-testing-data}  
+
+  
+
+   
+
+  
+
+# Use the model for prediction on the test  
+
+  
+
+predicted_DEPRESS_test <- DZ_wflow_fit %>%  
+
+  
+
+  predict(new_data = DZ_test)  
+
+  
+
+   
+
+  
+
+# Add the predicted column to the dataset so we have everything in one dataframe  
+
+  
+
+results_test <- DZ_test %>%  
+
+  
+
+  bind_cols(predicted_DEPRESS_test) %>%  
+
+  
+
+  rename(pred_DEPRESS = .pred)   # rename the predicted column  
+
+  
+
+   
+
+  
+
+# Evaluate the performance  
+
+  
+
+metrics(results_test, truth = DEPRESS, estimate = pred_DEPRESS)  
+
+  
+
+   
+
+  
+
+```  
+
+  
+
+   
+
+  
+
+   
+
+  
+
+The performance is noticeable worse, as expected. Random forests and other black-box methods are able to essentially memorize the training set, so their performance on the training data can be unrealistically optimistic. This is why using the training data for evaluation is a bad idea.   
+
+  
+
+   
+
+  
+
+Let's plot the actual and predicted values of "DEPRESS" so we can visually inspect the model fit.  
+
+  
+
+   
+
+  
+
+```{r plot-model-prediction}  
+
+  
+
+   
+
+  
+
+results_test %>%  
+
+  
+
+  ggplot(aes(x = DEPRESS, y = pred_DEPRESS)) +  
+
+  
+
+  geom_abline(intercept=0, slope=1) +  # we want data to fall close to this line  
+
+  
+
+  geom_point() +  
+
+  
+
+  xlab("actual outcome values") +   
+
+  
+
+  ylab("predicted outcome values")  
+
+  
+
+   
+
+  
+
+```  
+
+  
+
+  
+
+## Limitations of machine learning model  
+
+  
+
+   
+
+  
+
+ 
